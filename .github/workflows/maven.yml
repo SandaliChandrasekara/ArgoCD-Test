@@ -20,9 +20,10 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
         cache: maven
+        
+    - name: Build JAR
+      run: mvn clean install -DskipTests
 
-    - name: Checkout Code
-      uses: actions/checkout@v3
 
 
 
