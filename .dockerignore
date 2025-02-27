@@ -1,0 +1,15 @@
+# Ignore IDE and build tool directories
+.idea/
+.vscode/
+*.iml
+
+# Ignore local environment files
+*.log
+*.tmp
+
+# Ignore local build files
+*.class
+
+# Ignore Git files and directories
+.git/
+.gitignore
