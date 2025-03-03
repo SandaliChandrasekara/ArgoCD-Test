@@ -1,29 +1,17 @@
-# Stage 1: Build Stage
-FROM openjdk:17-jdk-slim AS build
+FROM node:latest
 
-# Set the working directory inside the container
-WORKDIR /app
+WORKDIR /usr/src/app
 
-# Copy the Maven wrapper files and project files into the container
-COPY mvnw .
-COPY .mvn .mvn
-COPY pom.xml .
-COPY src src
+COPY package*.json ./
 
-# Build the application using Maven
-RUN ./mvnw clean install -DskipTests
+RUN npm install
 
-# Stage 2: Runtime Stage
-FROM openjdk:17-jdk-slim
+COPY src/ ./src
+COPY public/ ./public
+COPY templates/ ./templates
+COPY src/utils/ ./src/utils
 
-# Set the working directory inside the container
-WORKDIR /app
+EXPOSE 3000
 
-# Copy the built JAR file from the build stage into the runtime image
-COPY --from=build /app/target/spring-petclinic-3.3.0-SNAPSHOT.jar app.jar
+CMD ["node", "src/app.js"]
 
-# Expose the port that the application will run on
-EXPOSE 8080
-
-# Run the application
-ENTRYPOINT ["java", "-jar", "app.jar"]
