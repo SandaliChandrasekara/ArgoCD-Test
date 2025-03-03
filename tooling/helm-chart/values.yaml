@@ -1,9 +1,0 @@
-datasourceUrl: jdbc:mysql://mysql:3306/petclinic
-appName: petclinic-app
-database: petclinic
-dbName: mysql
-image: sandalichandrasekara/petclinic-app:latest
-appPort: 8080
-mysqlPort: 3306  
-  
-
