@@ -1,0 +1,26 @@
+name: trivy
+
+on:
+  pull_request:
+    types: [ opened, reopened, synchronize ]
+  workflow_dispatch:
+
+jobs:
+
+  scan:
+    name: scan
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: "fs"
+          scan-ref: "."
+          format: "sarif"
+          scanners: "vuln,secret,misconfig,license"
+          severity: "UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL"
