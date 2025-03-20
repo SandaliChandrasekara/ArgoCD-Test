@@ -1,25 +1,37 @@
-name: trivy
+name: Trivy
 
 on:
   pull_request:
-    types: [ opened, reopened, synchronize ]
+    types: [opened, reopened, synchronize]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
 
 jobs:
-
   scan:
-    name: scan
+    name: Security Scan
     runs-on: ubuntu-latest
 
     steps:
 
-      - name: checkout
+      - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: scan
-        uses: aquasecurity/trivy-action@master
+      - name: Install Trivy
+        run: |
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+
+      - name: Run Trivy Scan - Filesystem
+        run: |
+          trivy fs --severity HIGH,CRITICAL,MEDIUM,LOW .
+      
+      - name: Run Trivy Scan - Configuration
+        run: |
+          trivy config --severity HIGH,CRITICAL,MEDIUM,LOW .
+
+      - name: Comment on PR
+        uses: marocchino/sticky-pull-request-comment@v2
         with:
-          scan-type: "fs"
-          scan-ref: "."
-          format: "sarif"
-          scanners: "vuln,secret,misconfig,license"
-          severity: "UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL"
+          path: scan-results.md
